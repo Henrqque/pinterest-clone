@@ -10,6 +10,8 @@ import {
   ScrollView,
 } from 'react-native';
 
+import FastImage from 'react-native-fast-image';
+
 interface Filme {
   id: string;
   download_url: string;
@@ -36,24 +38,29 @@ export default function App() {
   }
 
   return (
-    <ScrollView>
-      <View style={styles.container}>
-        <View style={styles.pin}>
-          {images
-            .filter((item, index) => index % 2 === 0)
-            .map(item => (
-              <ImageResizer key={item.id} data={item} index={0} />
-            ))}
-        </View>
-        <View style={styles.pin}>
-          {images
-            .filter((item, index) => index % 2 === 1)
-            .map(item => (
-              <ImageResizer key={item.id} data={item} index={0} />
-            ))}
-        </View>
-      </View>
-    </ScrollView>
+    <FlatList
+      data={[0]}
+      renderItem={({item}) => {
+        return (
+          <View style={styles.container}>
+            <View style={styles.pin}>
+              {images
+                .filter((item, index) => index % 2 === 0)
+                .map(item => (
+                  <ImageResizer key={item.id} data={item} index={0} />
+                ))}
+            </View>
+            <View style={styles.pin}>
+              {images
+                .filter((item, index) => index % 2 === 1)
+                .map(item => (
+                  <ImageResizer key={item.id} data={item} index={0} />
+                ))}
+            </View>
+          </View>
+        );
+      }}
+    />
   );
 }
 
@@ -74,10 +81,11 @@ function ImageResizer({data, index}: Props) {
 
   return (
     <View style={styles.viewImage}>
-      <Image
+      <FastImage
         style={[styles.image, {aspectRatio: ratio}]}
         source={{
           uri: data.download_url,
+          priority: FastImage.priority.high,
         }}
       />
       <Text style={styles.description}>{data.author}</Text>
@@ -103,6 +111,7 @@ const styles = StyleSheet.create({
   },
   image: {
     width: width / 2 - 20,
+    borderRadius: 10,
   },
   description: {
     fontSize: 17,
